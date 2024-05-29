@@ -41,13 +41,18 @@ export const Persons = ({ persons, setPersons }) => {
 
     const cancelDelete = (e)=>{
         setPersonToDelete(null);
-    }
+    };
+
+    const handleCreate = (e)=>{
+        setPersons([...persons, { id: persons.length + 1, ...editedPerson }]);
+        setEditedPerson({ name: '', role: '', img: ''});  
+    };
     
     return (
         <div>
           <h2>IT Team</h2>
           <div className='container d-flex justify-content-center '>
-            <div className='d-flex flex-row'>
+            <div className='d-flex flex-row flex-wrap row-cols-1 row-cols-md-2 row-cols-lg-3'>
               {persons.map((person) => {
                   return (
                       <div key={person.id} >
@@ -65,7 +70,7 @@ export const Persons = ({ persons, setPersons }) => {
             </div>
           </div>
           <div className='mt-4'>
-            <h2>Modificar Datos</h2>
+            <h2>{isEditing ? 'Modificar Datos':'Nuevo Usuario'}</h2>
             <div className='d-flex flex-column mt-4'>
               <input
                 name="name"
@@ -92,7 +97,12 @@ export const Persons = ({ persons, setPersons }) => {
                 className='form-control mb-2'
               />
               <div className="mt-2">
-                <button className='btn btn-primary' onClick={handleSave}>Guardar</button>
+                <button
+                  className='btn btn-primary'
+                  onClick={isEditing ? handleSave : handleCreate }
+                >
+                  {isEditing ?'Guardar':'Crear'}
+                </button>
               </div>
               <div id="deleteModal" className='modal fade' tabIndex='-1'>
                 <div className='modal-dialog'>
@@ -113,7 +123,7 @@ export const Persons = ({ persons, setPersons }) => {
                     <div className="modal-footer">
                       <button
                         type='button'
-                        className='btn btn-secundary'
+                        className='btn btn-secondary'
                         data-bs-dismiss='modal'
                         onClick={cancelDelete}
                       >
