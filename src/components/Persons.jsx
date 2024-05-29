@@ -6,6 +6,7 @@ export const Persons = ({ persons, setPersons }) => {
     const [editingId, setEditingID] = useState(null);
     const [editedPerson, setEditedPerson ] = useState({ name:'', role:'', img:''});
     const [isEditing, setIsEditing ] = useState(false);
+    const [personToDelete, setPersonToDelete] = useState(null);
     
     const handleChange = (e)=>{
         const {name, value } = e.target;
@@ -27,6 +28,20 @@ export const Persons = ({ persons, setPersons }) => {
         setEditedPerson({ name:'', role:'', img:''});
         setIsEditing(false);
     };
+
+    const handleDelete = (id)=>{
+        //console.log('id:', id);
+        setPersonToDelete(id);
+    };
+
+    const confirmDelete = (e)=>{
+        setPersons(persons.filter(person => person.id !== personToDelete));
+        setPersonToDelete(null);
+    };
+
+    const cancelDelete = (e)=>{
+        setPersonToDelete(null);
+    }
     
     return (
         <div>
@@ -35,13 +50,14 @@ export const Persons = ({ persons, setPersons }) => {
             <div className='d-flex flex-row'>
               {persons.map((person) => {
                   return (
-                      <div>
+                      <div key={person.id} >
                         <Person
-                          key={person.id}
+                          id={person.id}
                           name={person.name}
                           role={person.role}
                           img={person.img}
                           handleEdit={()=>handleEdit(person.id)}
+                          handleDelete={handleDelete}
                         />
                       </div>
                   );
@@ -77,6 +93,43 @@ export const Persons = ({ persons, setPersons }) => {
               />
               <div className="mt-2">
                 <button className='btn btn-primary' onClick={handleSave}>Guardar</button>
+              </div>
+              <div id="deleteModal" className='modal fade' tabIndex='-1'>
+                <div className='modal-dialog'>
+                  <div className='modal-content'>
+                    <div className='modal-header'>
+                      <h4 className="modal-title">Confirmar eliminación</h4>
+                      <button
+                        type='button'
+                        className='btn-close'
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        onClick={cancelDelete}
+                      ></button>
+                    </div>
+                    <div className="modal-body">
+                      <p>Estas seguro de eliminar a {persons.find(person => person.id === personToDelete)?.name}</p>
+                    </div>
+                    <div className="modal-footer">
+                      <button
+                        type='button'
+                        className='btn btn-secundary'
+                        data-bs-dismiss='modal'
+                        onClick={cancelDelete}
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type='button'
+                        className='btn btn-danger'
+                        data-bs-dismiss="modal"
+                        onClick={confirmDelete}
+                      >
+                        Eliminar
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
